@@ -10,6 +10,11 @@ const validateEmail = (email) =>
 
 const userSchema = new Schema(
 {
+    rank:
+    {
+        type:String,
+        required:true
+    },
     //the users username
     username: 
     {
@@ -29,7 +34,7 @@ const userSchema = new Schema(
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please use a valid email']
     },
     //holds any nessary info about the users not include any were else in the database
-    description:
+    about:
     {
         type:String,
         required: [true, 'Description is required']

@@ -13,7 +13,7 @@ const mineralSchema = new Schema(
     //declares what type of puzzle it is
     puzzleType:
     {
-        type:Int,
+        type:String,
         required: [true, 'The puzzle type is required'],
     },
 

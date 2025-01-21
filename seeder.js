@@ -38,17 +38,19 @@ const puzzle = [];
 const gernerate = (num) =>
 {
     for (let i = 0; i < num; i++)
-    {        
+    {       
+        var rank = 0
         var username = faker.person.firstName();
         var email = faker.internet.email();
-        var description = faker.lorem.sentences(1);
+        var about = faker.lorem.sentences(1);
         var password = "password";
 
         user.push(
         {
+            rank,
             username,
             email,
-            description,
+            about,
             password,
         });
 
@@ -89,9 +91,8 @@ const gernerate = (num) =>
             longitude,
             manager_email,
         });
-    }
         */
-
+    }
     return user, puzzle;
 }
 
