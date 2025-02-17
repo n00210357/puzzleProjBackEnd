@@ -3,14 +3,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 //connects to needed models
-const Work_hour = require('../models/work_hour.model');
-const Worker = require('../models/worker.model');
-const Mine = require('../models/mine.model');
+const comment = require('../models/comment.model');
+const Puzzle = require('../models/puzzle.model');
+const User = require('../models/user.model');
 
-//reads work_hour data
+//reads comment data
 const readData = (req, res) => 
 {
-    Work_hour.find()
+    comment.find()
     .then((data) => 
     {
         console.log(data);
@@ -20,7 +20,7 @@ const readData = (req, res) =>
         }
         else
         {
-           res.status(404).json("None found");
+            res.status(404).json("None found");
         }
     })
     .catch((err) => 
@@ -30,10 +30,10 @@ const readData = (req, res) =>
     });
 };
 
-//gets all work_hours in the database
+//gets all mineral_mines in the database
 const readAll = (req, res) =>
 {
-    Work_hour.find().then(data =>
+    comment.find().then(data =>
     {
         console.log(data);
     
@@ -52,12 +52,12 @@ const readAll = (req, res) =>
     });
 };
 
-//gets one work_hour in the database
+//gets one comment in the database
 const readOne = (req, res) => 
 {
     let id = req.params.id;
 
-    Work_hour.findById(id)
+    comment.findById(id)
     .then((data) => 
     {
         if(data)
@@ -68,7 +68,7 @@ const readOne = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `Work_hour with id: ${id} not found`
+                "message": `comment with id: ${id} not found`
             });
         }        
     })
@@ -89,15 +89,15 @@ const readOne = (req, res) =>
     });
 };
 
-//creates a work_hour
+//creates a comment
 const createData = (req, res) =>
 {
     let body = req.body;
 
-    Worker.findOne({email: req.body.worker_email})
-    .then(worker => 
+    Puzzle.findOne({_id: req.body.puzzle_id})
+    .then(puzzle => 
     {
-        if (!worker)
+        if (!puzzle)
         {
             return res.status(422).json(
             {
@@ -105,22 +105,22 @@ const createData = (req, res) =>
             });
         }
     })
-    Mine.findOne({_id: req.body.mine_id})
-    .then(mine => 
+    User.findOne({_id: req.body.user_id})
+    .then(user => 
     {
-        if (!mine)
+        if (!user)
         {
             return res.status(422).json(
             {
-                message: "Not a mine",
+                message: "Not a user",
             });
         }
     })
-    .then(Work_hour.create(body).then(data =>
+    .then(comment.create(body).then(data =>
     {    
         return res.status(201).json
         ({
-            message: "Work_hour created",
+            message: "comment created",
             data
         });
     })
@@ -135,16 +135,16 @@ const createData = (req, res) =>
     });
 };
 
-//updates a work_hour
+//updates a comment
 const updateData = (req, res) => 
 {
     let id = req.params.id;
     let body = req.body;
 
-    Worker.findOne({email: req.body.worker_email})
-    .then(worker => 
+    Puzzle.findOne({_id: req.body.puzzle_id})
+    .then(puzzle => 
     {
-        if (!worker)
+        if (!puzzle)
         {
             return res.status(422).json(
             {
@@ -152,18 +152,18 @@ const updateData = (req, res) =>
             });
         }
     })
-    Mine.findOne({_id: req.body.mine_id})
-    .then(mine => 
+    User.findOne({_id: req.body.user_id})
+    .then(user => 
     {
-        if (!mine)
+        if (!user)
         {
             return res.status(422).json(
             {
-                message: "Not a mine",
+                message: "Not a user",
             });
         }
     })
-    .then(Work_hour.findByIdAndUpdate(id, body, 
+    .then(comment.findByIdAndUpdate(id, body, 
     {
         new: true
     })
@@ -182,7 +182,7 @@ const updateData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `Work_hour with id: ${id} not found`
+                "message": `comment with id: ${id} not found`
             });
         }        
     }))
@@ -191,7 +191,8 @@ const updateData = (req, res) =>
         if(err.name === 'ValidationError')
         {
             console.error('Validation Error!!', err);
-            res.status(422).json({
+            res.status(422).json(
+            {
                 "msg": "Validation Error",
                 "error" : err.message 
             });
@@ -211,12 +212,12 @@ const updateData = (req, res) =>
     });
 };
 
-//delete a work_hour
+//delete a comment
 const deleteData = (req, res) => 
 {
     let id = req.params.id;
 
-    Work_hour.findById(id)
+    comment.findById(id)
     .then(data =>
     {
         if (data)
@@ -227,7 +228,7 @@ const deleteData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `Work_hour with id: ${id} not found`
+                "message": `comment with id: ${id} not found`
             });
         }
     })
@@ -235,7 +236,7 @@ const deleteData = (req, res) =>
     {
         res.status(200).json(
         {
-            "message": `Work_hour with id: ${id} deleted successfully`
+            "message": `comment with id: ${id} deleted successfully`
         });
     })
     .catch((err) => 
@@ -248,8 +249,7 @@ const deleteData = (req, res) =>
                 "message": `Bad request, ${id} is not a valid id`
             });
         }
-        else 
-        {
+        else {
             res.status(500).json(err)
         } 
     }); 

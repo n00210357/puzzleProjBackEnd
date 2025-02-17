@@ -3,14 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 //connects to needed models
-const mineral_mine = require('../models/mineral_mine.model');
-const Mineral = require('../models/mineral.model');
-const Mine = require('../models/mine.model');
+const Message = require('../models/message.model');
+const User = require('../models/user.model');
 
-//reads mineral_mine data
+//reads message data
 const readData = (req, res) => 
 {
-    mineral_mine.find()
+    Message.find()
     .then((data) => 
     {
         console.log(data);
@@ -20,7 +19,7 @@ const readData = (req, res) =>
         }
         else
         {
-            res.status(404).json("None found");
+           res.status(404).json("None found");
         }
     })
     .catch((err) => 
@@ -30,10 +29,10 @@ const readData = (req, res) =>
     });
 };
 
-//gets all mineral_mines in the database
+//gets all messages in the database
 const readAll = (req, res) =>
 {
-    mineral_mine.find().then(data =>
+    Message.find().then(data =>
     {
         console.log(data);
     
@@ -52,12 +51,12 @@ const readAll = (req, res) =>
     });
 };
 
-//gets one mineral_mine in the database
+//gets one message in the database
 const readOne = (req, res) => 
 {
     let id = req.params.id;
 
-    mineral_mine.findById(id)
+    Message.findById(id)
     .then((data) => 
     {
         if(data)
@@ -68,7 +67,7 @@ const readOne = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `mineral_mine with id: ${id} not found`
+                "message": `Message with id: ${id} not found`
             });
         }        
     })
@@ -89,15 +88,15 @@ const readOne = (req, res) =>
     });
 };
 
-//creates a mineral_mine
+//creates a message
 const createData = (req, res) =>
 {
     let body = req.body;
 
-    Mineral.findOne({_id: req.body.mineral_id})
-    .then(mineral => 
+    User.findOne({email: req.body.reciever})
+    .then(user => 
     {
-        if (!mineral)
+        if (!user)
         {
             return res.status(422).json(
             {
@@ -105,22 +104,22 @@ const createData = (req, res) =>
             });
         }
     })
-    Mine.findOne({_id: req.body.mine_id})
-    .then(mine => 
+    User.findOne({email: req.body.sender})
+    .then(user => 
     {
-        if (!mine)
+        if (!user)
         {
             return res.status(422).json(
             {
-                message: "Not a mine",
+                message: "Not a workers email",
             });
         }
     })
-    .then(mineral_mine.create(body).then(data =>
+    .then(Message.create(body).then(data =>
     {    
         return res.status(201).json
         ({
-            message: "mineral_mine created",
+            message: "Message created",
             data
         });
     })
@@ -135,16 +134,16 @@ const createData = (req, res) =>
     });
 };
 
-//updates a mineral_mine
+//updates a message
 const updateData = (req, res) => 
 {
     let id = req.params.id;
     let body = req.body;
 
-    Mineral.findOne({_id: req.body.mineral_id})
-    .then(mineral => 
+    User.findOne({email: req.body.reciever})
+    .then(user => 
     {
-        if (!mineral)
+        if (!user)
         {
             return res.status(422).json(
             {
@@ -152,18 +151,18 @@ const updateData = (req, res) =>
             });
         }
     })
-    Mine.findOne({_id: req.body.mine_id})
-    .then(mine => 
+    User.findOne({email: req.body.sender})
+    .then(user => 
     {
-        if (!mine)
+        if (!user)
         {
             return res.status(422).json(
             {
-                message: "Not a mine",
+                message: "Not a workers email",
             });
         }
     })
-    .then(mineral_mine.findByIdAndUpdate(id, body, 
+    .then(Message.findByIdAndUpdate(id, body, 
     {
         new: true
     })
@@ -182,7 +181,7 @@ const updateData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `mineral_mine with id: ${id} not found`
+                "message": `Message with id: ${id} not found`
             });
         }        
     }))
@@ -191,8 +190,7 @@ const updateData = (req, res) =>
         if(err.name === 'ValidationError')
         {
             console.error('Validation Error!!', err);
-            res.status(422).json(
-            {
+            res.status(422).json({
                 "msg": "Validation Error",
                 "error" : err.message 
             });
@@ -212,12 +210,12 @@ const updateData = (req, res) =>
     });
 };
 
-//delete a mineral_mine
+//delete a message
 const deleteData = (req, res) => 
 {
     let id = req.params.id;
 
-    mineral_mine.findById(id)
+    Message.findById(id)
     .then(data =>
     {
         if (data)
@@ -228,7 +226,7 @@ const deleteData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `mineral_mine with id: ${id} not found`
+                "message": `Message with id: ${id} not found`
             });
         }
     })
@@ -236,7 +234,7 @@ const deleteData = (req, res) =>
     {
         res.status(200).json(
         {
-            "message": `mineral_mine with id: ${id} deleted successfully`
+            "message": `Message with id: ${id} deleted successfully`
         });
     })
     .catch((err) => 
@@ -249,7 +247,8 @@ const deleteData = (req, res) =>
                 "message": `Bad request, ${id} is not a valid id`
             });
         }
-        else {
+        else 
+        {
             res.status(500).json(err)
         } 
     }); 
