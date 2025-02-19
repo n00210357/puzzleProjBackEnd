@@ -3,14 +3,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 //connects to needed models
-const comment = require('../models/comment.model');
-const Puzzle = require('../models/puzzle.model');
-const User = require('../models/user.model');
+const mineral_mine = require('../models/mineral_mine.model');
+const Mineral = require('../models/mineral.model');
+const Mine = require('../models/mine.model');
 
-//reads comment data
+//reads mineral_mine data
 const readData = (req, res) => 
 {
-    comment.find()
+    mineral_mine.find()
     .then((data) => 
     {
         console.log(data);
@@ -30,10 +30,10 @@ const readData = (req, res) =>
     });
 };
 
-//gets all comments in the database
+//gets all mineral_mines in the database
 const readAll = (req, res) =>
 {
-    comment.find().then(data =>
+    mineral_mine.find().then(data =>
     {
         console.log(data);
     
@@ -52,12 +52,12 @@ const readAll = (req, res) =>
     });
 };
 
-//gets one comment in the database
+//gets one mineral_mine in the database
 const readOne = (req, res) => 
 {
     let id = req.params.id;
 
-    comment.findById(id)
+    mineral_mine.findById(id)
     .then((data) => 
     {
         if(data)
@@ -68,7 +68,7 @@ const readOne = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `comment with id: ${id} not found`
+                "message": `mineral_mine with id: ${id} not found`
             });
         }        
     })
@@ -89,15 +89,15 @@ const readOne = (req, res) =>
     });
 };
 
-//creates a comment
+//creates a mineral_mine
 const createData = (req, res) =>
 {
     let body = req.body;
 
-    Puzzle.findOne({_id: req.body.puzzle_id})
-    .then(puzzle => 
+    Mineral.findOne({_id: req.body.mineral_id})
+    .then(mineral => 
     {
-        if (!puzzle)
+        if (!mineral)
         {
             return res.status(422).json(
             {
@@ -105,22 +105,22 @@ const createData = (req, res) =>
             });
         }
     })
-    User.findOne({_id: req.body.user_id})
-    .then(user => 
+    Mine.findOne({_id: req.body.mine_id})
+    .then(mine => 
     {
-        if (!user)
+        if (!mine)
         {
             return res.status(422).json(
             {
-                message: "Not a user",
+                message: "Not a mine",
             });
         }
     })
-    .then(comment.create(body).then(data =>
+    .then(mineral_mine.create(body).then(data =>
     {    
         return res.status(201).json
         ({
-            message: "comment created",
+            message: "mineral_mine created",
             data
         });
     })
@@ -135,16 +135,16 @@ const createData = (req, res) =>
     });
 };
 
-//updates a comment
+//updates a mineral_mine
 const updateData = (req, res) => 
 {
     let id = req.params.id;
     let body = req.body;
 
-    Puzzle.findOne({_id: req.body.puzzle_id})
-    .then(puzzle => 
+    Mineral.findOne({_id: req.body.mineral_id})
+    .then(mineral => 
     {
-        if (!puzzle)
+        if (!mineral)
         {
             return res.status(422).json(
             {
@@ -152,18 +152,18 @@ const updateData = (req, res) =>
             });
         }
     })
-    User.findOne({_id: req.body.user_id})
-    .then(user => 
+    Mine.findOne({_id: req.body.mine_id})
+    .then(mine => 
     {
-        if (!user)
+        if (!mine)
         {
             return res.status(422).json(
             {
-                message: "Not a user",
+                message: "Not a mine",
             });
         }
     })
-    .then(comment.findByIdAndUpdate(id, body, 
+    .then(mineral_mine.findByIdAndUpdate(id, body, 
     {
         new: true
     })
@@ -182,7 +182,7 @@ const updateData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `comment with id: ${id} not found`
+                "message": `mineral_mine with id: ${id} not found`
             });
         }        
     }))
@@ -212,12 +212,12 @@ const updateData = (req, res) =>
     });
 };
 
-//delete a comment
+//delete a mineral_mine
 const deleteData = (req, res) => 
 {
     let id = req.params.id;
 
-    comment.findById(id)
+    mineral_mine.findById(id)
     .then(data =>
     {
         if (data)
@@ -228,7 +228,7 @@ const deleteData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `comment with id: ${id} not found`
+                "message": `mineral_mine with id: ${id} not found`
             });
         }
     })
@@ -236,7 +236,7 @@ const deleteData = (req, res) =>
     {
         res.status(200).json(
         {
-            "message": `comment with id: ${id} deleted successfully`
+            "message": `mineral_mine with id: ${id} deleted successfully`
         });
     })
     .catch((err) => 
