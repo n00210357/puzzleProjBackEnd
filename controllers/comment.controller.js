@@ -7,7 +7,7 @@ const Comment = require('../models/comment.model');
 const Puzzle = require('../models/puzzle.model');
 const User = require('../models/user.model');
 
-//reads Comment data
+//reads comment data
 const readData = (req, res) => 
 {
     Comment.find()
@@ -182,7 +182,7 @@ const updateData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `Comment with id: ${id} not found`
+                "message": `comment with id: ${id} not found`
             });
         }        
     }))
@@ -228,7 +228,7 @@ const deleteData = (req, res) =>
         {
             res.status(404).json(
             {
-                "message": `Comment with id: ${id} not found`
+                "message": `comment with id: ${id} not found`
             });
         }
     })
@@ -236,7 +236,7 @@ const deleteData = (req, res) =>
     {
         res.status(200).json(
         {
-            "message": `Comment with id: ${id} deleted successfully`
+            "message": `comment with id: ${id} deleted successfully`
         });
     })
     .catch((err) => 

@@ -1,19 +1,19 @@
 //enables mongoose modules
 const { Schema, model } = require('mongoose');
 
-const Work_hourSchema = new Schema(
+const ReplySchema = new Schema(
 {
     //links to the worker that is working these hours
-    reciever:
+    user_id:
     {
         type:String,
-        required: [true, 'Description is required']
+        required: [true, 'User id is required']
     },
     //links to the worker that is working these hours
-    sender:
+    comment_id:
     {
         type:String,
-        required: [true, 'Description is required']
+        required: [true, 'Comment id is required']
     },
     //the details
     text:
@@ -28,4 +28,4 @@ const Work_hourSchema = new Schema(
 });
 
 //exports the model
-module.exports = model('Work_hour', Work_hourSchema);
+module.exports = model('Reply', ReplySchema);
