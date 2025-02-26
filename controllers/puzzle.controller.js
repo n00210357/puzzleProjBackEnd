@@ -148,6 +148,11 @@ const createData = (req, res) =>
 {
     let body = req.body;
     
+    if (body.image_path)
+    {
+        body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
+    }
+
     Puzzle.create(body).then(data =>
     {    
         return res.status(201).json
@@ -173,9 +178,9 @@ const updateData = (req, res) =>
     let id = req.params.id;
     let body = req.body;
 
-    if (req.file)
+    if (body.image_path)
     {
-        body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
+        body.image_path = process.env.STORAGE_ENGINE === 'S3' ? body.image_path.key : body.image_path.filename;
     }
 
     Puzzle.findByIdAndUpdate(id, body, 
@@ -186,7 +191,7 @@ const updateData = (req, res) =>
     {
         if(data)
         {
-            if (req.file)
+            if (data.filename)
             {
                 deleteImage(data.filename)
             }

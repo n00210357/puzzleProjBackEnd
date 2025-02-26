@@ -152,7 +152,7 @@ const updateData = (req, res) =>
     let id = req.params.id;
     let body = req.body;
 
-    if (req.file)
+    if (body.image_path)
     {
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
@@ -165,9 +165,9 @@ const updateData = (req, res) =>
     {
         if(data)
         {
-            if (req.file)
+            if (data.image_path)
             {
-                deleteImage(data.filename)
+                deleteImage(data.image_path)
             }
         
             res.status(201).json(data);
@@ -255,11 +255,17 @@ const deleteData = (req, res) =>
 const registor = (req, res) => 
 {
     let newUser = new User(req.body);
-    console.log(req.body)
+    console.log(req.image_path)
 
-    if (req.file)
+    if(req.file)
     {
         newUser.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
+    }
+    else 
+    {
+        return res.status(422).json({
+            message: "Image not uploaded!"
+        });
     }
 
     if (newUser.rank == null || newUser.rank == undefined || newUser.rank != Number)
