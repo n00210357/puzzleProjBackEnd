@@ -153,7 +153,7 @@ const createData = (req, res) =>
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
 
-    Puzzle.create(body).then(data =>
+    Puzzle.save().then(data =>
     {    
         return res.status(201).json
         ({
