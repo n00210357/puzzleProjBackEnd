@@ -156,6 +156,7 @@ const updateData = (req, res) =>
     {
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
+    
     User.findByIdAndUpdate(id, body, 
     {
         new: true
@@ -254,7 +255,6 @@ const deleteData = (req, res) =>
 const registor = (req, res) => 
 {
     let newUser = new User(req.body);
-    console.log(req.image_path)
 
     if(req.file)
     {

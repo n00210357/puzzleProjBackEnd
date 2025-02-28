@@ -146,7 +146,7 @@ const readOne = (req, res) =>
 //creates a puzzle
 const createData = (req, res) =>
 {
-    let body = req.body;
+    let body =  new Puzzle(req.body);
     
     if(req.file)
     {
@@ -191,9 +191,9 @@ const updateData = (req, res) =>
     {
         if(data)
         {
-            if (data.filename)
+            if (data.image_path)
             {
-                deleteImage(data.filename)
+                deleteImage(data.image_path)
             }
 
             res.status(201).json(data);
