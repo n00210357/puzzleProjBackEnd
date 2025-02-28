@@ -180,7 +180,7 @@ const updateData = (req, res) =>
 
     if(req.file)
     {
-        body.image_path = process.env.STORAGE_ENGINE === 'S3' ? body.image_path.key : body.image_path.filename;
+        body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
 
     Puzzle.findByIdAndUpdate(id, body, 
