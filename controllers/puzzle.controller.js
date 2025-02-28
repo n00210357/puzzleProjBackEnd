@@ -158,7 +158,9 @@ const createData = (req, res) =>
         return res.status(201).json
         ({
             message: "Puzzle created",
-            data
+            data,
+            req,
+            body
         });
     }
     ).catch(err =>
