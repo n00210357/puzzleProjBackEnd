@@ -152,11 +152,13 @@ const updateData = (req, res) =>
     let id = req.params.id;
     let body = req.body;
 
+    //user info
     if(req.file)
     {
+        body.image_path = null
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
-    
+
     User.findByIdAndUpdate(id, body, 
     {
         new: true
@@ -165,9 +167,9 @@ const updateData = (req, res) =>
     {
         if(data)
         {
-            if (data.image_path)
+            if (data.image_path && User.image_path)
             {
-                deleteImage(data.image_path)
+                deleteImage(User.image_path)
             }
         
             res.status(201).json(data);
@@ -255,6 +257,7 @@ const deleteData = (req, res) =>
 const registor = (req, res) => 
 {
     let newUser = new User(req.body);
+    console.log(req.image_path)
 
     if(req.file)
     {

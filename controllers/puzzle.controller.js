@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 
 //connects to puzzle models
 const Puzzle = require('../models/puzzle.model');
+const User = require('../models/user.model');
 
 //deletes a saved image
 const deleteImage = async (filename) =>
@@ -146,21 +147,31 @@ const readOne = (req, res) =>
 //creates a puzzle
 const createData = (req, res) =>
 {
-    let body =  new Puzzle(req.body);
-    
+    let body = req.body
+
+    //user info
     if(req.file)
     {
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
 
-    Puzzle.save().then(data =>
+    User.findOne({_id: req.body.user_id})
+    .then(user => 
+    {
+        if (!user)
+        {
+            return res.status(422).json(
+            {
+                message: "Not a user",
+            });
+        }
+    })
+    .then(Puzzle.create(body).then(body =>
     {    
         return res.status(201).json
         ({
             message: "Puzzle created",
-            data,
-            req,
-            body
+            body,
         });
     }
     ).catch(err =>
@@ -171,7 +182,7 @@ const createData = (req, res) =>
         }
     
         return res.status(500).json(err);
-    });
+    }));
 };
 
 //updates a puzzle
@@ -180,11 +191,12 @@ const updateData = (req, res) =>
     let id = req.params.id;
     let body = req.body;
 
+    //user info
     if(req.file)
     {
+        body.image_path = null
         body.image_path = process.env.STORAGE_ENGINE === 'S3' ? req.file.key : req.file.filename;
     }
-
     Puzzle.findByIdAndUpdate(id, body, 
     {
         new: true
@@ -193,11 +205,11 @@ const updateData = (req, res) =>
     {
         if(data)
         {
-            if (data.image_path)
+            if (data.image_path && Puzzle.image_path)
             {
-                deleteImage(data.image_path)
+                deleteImage(Puzzle.image_path)
             }
-
+        
             res.status(201).json(data);
         }
         else 
